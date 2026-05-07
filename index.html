@@ -1262,9 +1262,9 @@ header.auth-ready{ display:grid!important }
 </div>
 
 <script>
-// ══════════════════════════════════════
+
 // DATA
-// ══════════════════════════════════════
+
 
 let binders = [];
 
@@ -1292,15 +1292,15 @@ let cwMode = 'collection';
 let cwSetApiCard = null;
 let currentBinId = null;
 
-// ══════════════════════════════════════
+
 // PERSISTENCE (implemented below with cloud sync)
-// ══════════════════════════════════════
+
 const DATA_VERSION = '2025-04-23-v3';
 // saveAll() and loadSaved() are defined further below with cloud auth
 
-// ══════════════════════════════════════
+
 // CARD WINDOW (Rare Candy style)
-// ══════════════════════════════════════
+
 function openCardWindow(cardId){
   cwCardId=cardId; cwMode='collection'; cwSetApiCard=null;
   const c=cards.find(x=>x.id===cardId);
@@ -1520,9 +1520,9 @@ function _renderCwChart(spark){
 }
 
 
-// ══════════════════════════════════════
+
 // BIN CARDS PANEL
-// ══════════════════════════════════════
+
 function openBinCards(binId){
   currentBinId=binId;
   const b=bins.find(x=>x.id===binId);
@@ -1595,9 +1595,9 @@ function saveItemToBin(){
   renderBinCards(); renderTab('bins');
 }
 
-// ══════════════════════════════════════
+
 // IMAGE CACHE
-// ══════════════════════════════════════
+
 const imgCache = {};
 const TCG_API = 'https://api.pokemontcg.io/v2/cards';
 
@@ -1677,9 +1677,9 @@ function applyImg(cardId, imgEl, shimEl) {
   });
 }
 
-// ══════════════════════════════════════
+
 // HELPERS
-// ══════════════════════════════════════
+
 const SPORT_EMOJI = {pokemon:'✨',basketball:'🏀',baseball:'⚾',football:'🏈',soccer:'⚽',other:'🎴'};
 const SPORT_CHIP = {pokemon:'chip-purple',basketball:'chip-gold',baseball:'chip-blue',football:'chip-red',soccer:'chip-green',other:'chip-gray'};
 const FORMAT_LABEL = {booster_box:'Booster Box',booster_pack:'Pack',etb:'ETB',blister:'Blister',case:'Sealed Case',hobby_box:'Hobby Box',other:'Product'};
@@ -1713,9 +1713,9 @@ function getEmoji(name='',type='pokemon'){
 
 function binderForCard(c){ return binders.find(b=>b.id===c.binder)||{name:'Unassigned',type:'other'}; }
 
-// ══════════════════════════════════════
+
 // TAB SWITCHING
-// ══════════════════════════════════════
+
 let currentSubTab = 'catalog';
 
 function switchTab(tab){
@@ -1747,9 +1747,9 @@ function switchSubTab(sub) {
   renderCollection();
 }
 
-// ══════════════════════════════════════
+
 // COLLECTION TAB — routes to sub-tabs
-// ══════════════════════════════════════
+
 function renderCollection(){
   if(currentSubTab === 'catalog')        renderCatalog();
   else if(currentSubTab === 'bins')      renderBins();
@@ -1836,9 +1836,9 @@ function renderCardGrid(){
   });
 }
 
-// ══════════════════════════════════════
+
 // BINDERS TAB
-// ══════════════════════════════════════
+
 function renderBinders(){
   const pane = document.getElementById('tab-binders');
   const rows = binders.map(b=>{
@@ -1892,9 +1892,9 @@ function viewBinderCards(binderId){
   },50);
 }
 
-// ══════════════════════════════════════
+
 // BINS TAB
-// ══════════════════════════════════════
+
 function renderBins(){
   const pane = document.getElementById('tab-bins') || document.getElementById('tab-collection');
   const binCards = cards.filter(c=>c.bin&&!c.sold);
@@ -1955,9 +1955,9 @@ function renderBins(){
   `;
 }
 
-// ══════════════════════════════════════
+
 // PRODUCTS TAB
-// ══════════════════════════════════════
+
 function renderProducts(){
   const pane = document.getElementById('tab-products');
   const sealed = products.filter(p=>p.status==='sealed');
@@ -2011,9 +2011,9 @@ function markProductSold(pid){
   if(p){p.status='sold';p.soldAt=parseFloat(price)||p.market;saveAll();renderTab('products');renderTab('profits');}
 }
 
-// ══════════════════════════════════════
+
 // PROFITS TAB
-// ══════════════════════════════════════
+
 function renderProfits(){
   const pane = document.getElementById('tab-profits');
   const soldCards = cards.filter(c=>c.sold);
@@ -2073,15 +2073,15 @@ function renderProfits(){
   `;
 }
 
-// ══════════════════════════════════════
+
 // DETAIL MODAL
-// ══════════════════════════════════════
+
 // openCardDetail is now openCardWindow — kept as alias for safety
 function openCardDetail(id){ openCardWindow(id); }
 
-// ══════════════════════════════════════
+
 // ADD / EDIT FORMS
-// ══════════════════════════════════════
+
 function openAdd(){
   if(currentTab==='binders'){openBinderEdit(null);return;}
   if(currentTab==='bins'){openBinEdit(null);return;}
@@ -2270,18 +2270,18 @@ function saveProduct(){
   renderTab(currentTab);
 }
 
-// ══════════════════════════════════════
+
 // UTIL
-// ══════════════════════════════════════
+
 function renderTab(tab){
   if(tab==='collection') renderCollection();
   else if(tab==='scanner') renderScanner();
   else if(tab==='grader') renderGrader();
 }
 
-// ══════════════════════════════════════
+
 // EXPENSES SUB-TAB
-// ══════════════════════════════════════
+
 function renderExpenses(){
   const pane = document.getElementById('tab-collection');
   const totalPaid = products.reduce((s,p)=>s+(p.paid*p.qty),0);
@@ -2305,9 +2305,9 @@ function renderExpenses(){
     <button class="header-btn primary" style="margin-top:1rem" onclick="openAddProduct()">+ Add Expense</button>`;
 }
 
-// ══════════════════════════════════════
+
 // SUPPLIES SUB-TABS (Sleeves / Toploaders)
-// ══════════════════════════════════════
+
 function renderSupplies(type){
   const pane = document.getElementById('tab-collection');
   const label = type === 'sleeves' ? 'Sleeves' : 'Toploaders';
@@ -2358,9 +2358,9 @@ function removeSupply(type,idx){
   renderSupplies(type);
 }
 
-// ══════════════════════════════════════
+
 // GRADING COSTS SUB-TAB
-// ══════════════════════════════════════
+
 function renderGradingCosts(){
   const pane = document.getElementById('tab-collection');
   const slabs = cards.flatMap(c=>(c.slabs||[]).map(s=>({...s,cardName:c.name})));
@@ -2387,9 +2387,9 @@ function renderGradingCosts(){
     <div class="profit-list">${rows}</div>`;
 }
 
-// ══════════════════════════════════════
+
 // TOTAL SUB-TAB
-// ══════════════════════════════════════
+
 function renderTotal(){
   const pane = document.getElementById('tab-collection');
   const activeCards = cards.filter(c=>!c.sold);
@@ -2444,7 +2444,7 @@ function renderTotal(){
 }
 
 
-// ══════════════════════════════════════
+
 let rcStream = null;
 let rcScanned = []; // { id, dataUrl, status, identified, tcgMatches, selectedMatch, added }
 let rcResultItem = null;
@@ -2539,6 +2539,8 @@ function rgTapAnywhere(e) {
   if (e.target.closest('.rg-drawer, .rg-result-sheet, .rg-topbar, .rg-result-inner, .rg-system-dropdown')) return;
   rgTapToGrade();
 }
+
+function renderRcDrawer() {
   const list = document.getElementById('rc-scanned-list');
   const empty = document.getElementById('rc-drawer-empty');
   if (!list) return;
@@ -2716,9 +2718,9 @@ async function analyzeRcItem(item) {
   }
 }
 
-// ══════════════════════════════════════
+
 // RC GRADER (Rare Candy style)
-// ══════════════════════════════════════
+
 let rgStream = null;
 let rgGraded = []; // { id, dataUrl, status, result }
 let rgResultItem = null;
@@ -3255,9 +3257,9 @@ Respond ONLY with valid JSON, no other text:
 function closeId(id){document.getElementById(id).classList.remove('open');}
 function closeOverlay(e,id){if(e.target===document.getElementById(id))closeId(id);}
 
-// ══════════════════════════════════════
+
 // SETS TAB
-// ══════════════════════════════════════
+
 let allSets = [];
 let allJpSets = [];
 let currentSetId = null;
@@ -3610,9 +3612,9 @@ function addFromSet(apiId,name,num,price){
   document.getElementById('edit-overlay').classList.add('open');
 }
 
-// ══════════════════════════════════════
+
 // MARKET PRICES
-// ══════════════════════════════════════
+
 const marketCache={};
 
 async function fetchMarketPrices(card){
@@ -3706,9 +3708,9 @@ async function renderMarketPanel(card){
   `;
 }
 
-// ══════════════════════════════════════
+
 // SILHOUETTE THEMES BACKGROUND
-// ══════════════════════════════════════
+
 const THEME_SILHOUETTES={
   // Fire: Charmander → Charmeleon → Charizard
   fire:{svg:`<svg viewBox="0 0 520 380" xmlns="http://www.w3.org/2000/svg" style="position:fixed;bottom:0;right:0;width:600px;height:420px;opacity:.055;pointer-events:none;z-index:0;color:currentColor">
@@ -4154,9 +4156,9 @@ function applySilhouette(theme){
   document.body.appendChild(div);
 }
 
-// ══════════════════════════════════════
+
 // THEME
-// ══════════════════════════════════════
+
 function setTheme(t){
   const allThemes=['light','dark','galaxy','fire','water','grass','electric','psychic','fighting','dark-energy','steel'];
   document.documentElement.setAttribute('data-theme', t==='light'?'':t);
@@ -4181,9 +4183,9 @@ document.addEventListener('click', e=>{
   if(island && !island.contains(e.target)) closeGear();
 });
 
-// ══════════════════════════════════════
+
 // FIREBASE AUTH + DATA SYNC
-// ══════════════════════════════════════
+
 let currentUser = null;
 
 function setCurrentUser(user) {
