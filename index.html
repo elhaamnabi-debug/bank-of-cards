@@ -597,7 +597,127 @@ body{background:var(--bg);color:var(--text);font-family:"DM Sans",sans-serif;min
 .rg-save-btn:hover{opacity:.88}
 .rg-dismiss-btn{width:100%;padding:12px;border-radius:14px;border:1px solid var(--border);background:transparent;font-family:inherit;font-size:14px;font-weight:600;cursor:pointer;color:var(--text2)}
 
-/* ── SCANNER PILL in nav ── */
+/* ══════════════════════════════════════
+   INTRO ANIMATION
+══════════════════════════════════════ */
+#boc-intro{
+  position:fixed;inset:0;z-index:99999;
+  background:#0a0806;
+  display:flex;align-items:center;justify-content:center;
+  overflow:hidden;
+  transition:opacity .6s ease, transform .6s ease;
+}
+#boc-intro.fade-out{opacity:0;pointer-events:none;}
+#boc-intro canvas{position:absolute;inset:0;width:100%;height:100%}
+
+/* Bank building */
+.intro-bank{
+  position:absolute;bottom:-20%;left:50%;transform:translateX(-50%);
+  width:340px;
+  animation:bankRise 0.9s cubic-bezier(0.16,1,0.3,1) 0.3s both;
+}
+@keyframes bankRise{from{transform:translateX(-50%) translateY(120px);opacity:0}to{transform:translateX(-50%) translateY(0);opacity:1}}
+
+/* Explosion flash */
+.intro-flash{
+  position:absolute;inset:0;
+  background:radial-gradient(circle at 50% 60%, #fff9e6 0%, #ffcc44 30%, transparent 70%);
+  opacity:0;pointer-events:none;
+  animation:flashPop 0.15s ease-out 1.8s forwards;
+}
+@keyframes flashPop{0%{opacity:0}40%{opacity:0.9}100%{opacity:0}}
+
+/* Shockwave ring */
+.intro-ring{
+  position:absolute;bottom:30%;left:50%;
+  width:20px;height:20px;border-radius:50%;
+  border:3px solid rgba(255,200,50,0.8);
+  transform:translate(-50%,-50%) scale(0);
+  opacity:0;pointer-events:none;
+  animation:ringExpand 0.5s ease-out 1.82s forwards;
+}
+@keyframes ringExpand{0%{transform:translate(-50%,-50%) scale(0);opacity:1}100%{transform:translate(-50%,-50%) scale(60);opacity:0}}
+
+/* Flying cards */
+.intro-card{
+  position:absolute;
+  width:54px;height:76px;
+  border-radius:5px;
+  background:linear-gradient(135deg,#1a1a4e,#2d2d8a);
+  border:1.5px solid rgba(255,255,255,0.25);
+  box-shadow:0 4px 20px rgba(0,0,0,0.6),inset 0 1px 0 rgba(255,255,255,0.1);
+  display:flex;align-items:center;justify-content:center;
+  font-size:22px;
+  opacity:0;
+  animation:none;
+  will-change:transform,opacity;
+}
+.intro-card::before{
+  content:'';position:absolute;inset:3px;border-radius:3px;
+  border:1px solid rgba(255,255,255,0.1);
+  background:linear-gradient(135deg,rgba(255,255,255,0.05),transparent);
+}
+@keyframes cardFly{
+  0%{opacity:0;transform:var(--start) scale(0.3) rotate(var(--rot-start))}
+  15%{opacity:1}
+  60%{opacity:1;transform:var(--mid) scale(1.1) rotate(var(--rot-mid))}
+  100%{opacity:0;transform:var(--end) scale(1.8) rotate(var(--rot-end))}
+}
+
+/* Logo reveal */
+.intro-logo-reveal{
+  position:absolute;
+  display:flex;flex-direction:column;align-items:center;gap:16px;
+  opacity:0;
+  animation:logoReveal 0.7s cubic-bezier(0.34,1.56,0.64,1) 2.6s forwards;
+}
+@keyframes logoReveal{
+  0%{opacity:0;transform:scale(0.4) translateY(20px)}
+  60%{opacity:1;transform:scale(1.08) translateY(-4px)}
+  100%{opacity:1;transform:scale(1) translateY(0)}
+}
+.intro-logo-icon{
+  width:100px;height:100px;
+  filter:drop-shadow(0 0 24px rgba(212,58,46,0.7)) drop-shadow(0 0 48px rgba(232,99,10,0.4));
+}
+.intro-logo-text{
+  font-family:'Syne',sans-serif;font-weight:800;font-size:38px;letter-spacing:-1.5px;
+  color:#fff;text-align:center;line-height:1;
+  text-shadow:0 0 40px rgba(255,255,255,0.3);
+}
+.intro-logo-text span{color:#d43a2e}
+.intro-skip{
+  position:absolute;bottom:24px;right:24px;
+  color:rgba(255,255,255,0.3);font-size:12px;cursor:pointer;
+  font-family:'DM Sans',sans-serif;
+  transition:color .2s;background:none;border:none;
+}
+.intro-skip:hover{color:rgba(255,255,255,0.7)}
+
+/* Smoke particles */
+.intro-smoke{
+  position:absolute;bottom:28%;left:50%;
+  width:8px;height:8px;border-radius:50%;
+  background:rgba(200,180,120,0.6);
+  transform:translateX(-50%);
+  opacity:0;pointer-events:none;
+}
+@keyframes smokeRise{
+  0%{opacity:0.8;transform:translateX(var(--sx)) scale(1)}
+  100%{opacity:0;transform:translateX(var(--sx2)) translateY(-120px) scale(4)}
+}
+
+/* Debris chunks */
+.intro-debris{
+  position:absolute;
+  background:var(--dc,#8B7355);
+  opacity:0;pointer-events:none;
+  border-radius:2px;
+}
+@keyframes debrisFly{
+  0%{opacity:1;transform:translate(0,0) rotate(0deg)}
+  100%{opacity:0;transform:translate(var(--dx),var(--dy)) rotate(var(--dr))}
+}
 .tab-scanner-pill{
   background:var(--text) !important;
   color:#fff !important;
@@ -953,6 +1073,17 @@ header.auth-ready{ display:grid!important }
           <button class="theme-option" id="theme-steel" onclick="setTheme('steel')">
             <span class="theme-swatch" style="background:linear-gradient(135deg,#2a4a6a,#5588bb)"></span> ⚙️ Steel
           </button>
+          <span class="gear-section-label" style="margin-top:8px;border-top:1px solid var(--border);padding-top:8px">API Keys</span>
+          <div style="padding:2px 8px 8px">
+            <div style="font-size:10px;color:var(--text3);margin-bottom:4px">🔨 PokéTrace — eBay sold prices</div>
+            <div style="display:flex;gap:5px">
+              <input type="password" id="gear-pt-key" placeholder="Paste API key…"
+                style="flex:1;padding:5px 7px;border:1px solid var(--border);border-radius:6px;font-size:11px;background:var(--surface2);color:var(--text);outline:none;min-width:0">
+              <button onclick="savePokéTraceKey()" style="padding:5px 9px;border-radius:6px;border:none;background:var(--text);color:#fff;font-size:11px;font-weight:600;cursor:pointer;white-space:nowrap">Save</button>
+            </div>
+            <div style="font-size:9px;color:var(--text3);margin-top:3px">Free key at <a href="https://poketrace.com/developers" target="_blank" style="color:var(--blue)">poketrace.com</a></div>
+            <div id="gear-pt-status" style="font-size:9px;margin-top:3px"></div>
+          </div>
           <div style="height:1px;background:var(--border);margin:8px 2px 4px"></div>
           <button class="theme-option" style="color:var(--red)" onclick="doLogout()">↩ Sign Out</button>
         </div>
@@ -3615,58 +3746,167 @@ function addFromSet(apiId,name,num,price){
 
 // MARKET PRICES
 
+// ── Market price helpers ──
+function getPokéTraceKey(){ return localStorage.getItem('boc_poketrace_key')||''; }
+
+function savePokéTraceKey(){
+  const key = document.getElementById('gear-pt-key')?.value?.trim()||'';
+  localStorage.setItem('boc_poketrace_key', key);
+  // Clear cache so prices refresh with new key
+  Object.keys(marketCache).forEach(k=>delete marketCache[k]);
+  const status = document.getElementById('gear-pt-status');
+  if(status){ status.textContent = key ? '✓ Key saved' : 'Key cleared'; status.style.color = key ? 'var(--green)' : 'var(--text3)'; }
+}
+
+function cleanCardName(name){
+  return name
+    .replace(/^M\s+/,'')
+    .replace(/\s*&\s*.+/,'')
+    .replace(/\s*ex$/i,'')
+    .replace(/\s*-EX$/i,'').replace(/\s*-GX$/i,'')
+    .replace(/\s*VMAX$/i,'').replace(/\s*VSTAR$/i,'')
+    .replace(/\s*\bV$/i,'')
+    .replace(/Dark\s+/i,'')
+    .replace(/\s*Alt Art$/i,'')
+    .trim();
+}
+
 const marketCache={};
 
 async function fetchMarketPrices(card){
   const key=card.id;
-  if(marketCache[key]) return marketCache[key];
+  if(marketCache[key] && !marketCache[key].loading) return marketCache[key];
   marketCache[key]={loading:true};
+
+  const ptKey = getPokéTraceKey();
+  let prices = null;
+
+  // ── Source 1: PokéTrace (real eBay sold + TCGPlayer + Cardmarket) ──
+  if(ptKey){
+    try{
+      const r = await fetch(
+        `https://api.poketrace.com/v1/cards?search=${encodeURIComponent(card.name)}&limit=5`,
+        { headers:{ 'X-API-Key': ptKey } }
+      );
+      if(r.ok){
+        const d = await r.json();
+        const rawNum = card.num.split('/')[0].replace(/^0+/,'');
+        const results = d.cards || d.results || d.data || [];
+        let best = results.find(c=>(c.card_number||c.number||'')===rawNum) || results[0];
+        if(best){
+          const tcg  = best.tcgplayer || best.tcg_player || {};
+          const cm   = best.cardmarket || best.card_market || {};
+          const ebay = best.ebay || best.ebay_sold || {};
+          prices = {
+            tcgMarket: tcg.market_price || tcg.marketPrice  || tcg.market || null,
+            tcgLow:    tcg.low_price    || tcg.lowPrice     || tcg.low    || null,
+            tcgMid:    tcg.mid_price    || tcg.midPrice     || tcg.mid    || null,
+            tcgHigh:   tcg.high_price   || tcg.highPrice    || tcg.high   || null,
+            tcgUrl:    tcg.url || null,
+            cmAvg:     cm.average_sell_price || cm.averageSellPrice || cm.avg || null,
+            cmTrend:   cm.trend_price        || cm.trendPrice       || null,
+            cmLow:     cm.low_price          || cm.lowPrice         || null,
+            ebayAvg:   ebay.average || ebay.avg_sold  || ebay.averageSold || null,
+            ebayLow:   ebay.low     || ebay.low_sold  || null,
+            ebayHigh:  ebay.high    || ebay.high_sold || null,
+            ebayCount: ebay.count   || ebay.sales_count || null,
+            ebayRecent: ebay.recent_sales || ebay.recentSales || null,
+            source: 'PokéTrace (TCGPlayer + eBay sold)',
+            updated: new Date().toLocaleDateString(),
+          };
+        }
+      }
+    }catch(e){ /* fall through */ }
+  }
+
+  // ── Source 2: pokemontcg.io (always runs — free, no key needed) ──
   try{
-    // Search by name + number for precise match
-    const num=card.num.split('/')[0].replace(/^0+/,'');
-    const cleanName=card.name.replace(/\s*(BREAK|VMAX|VSTAR|-EX|-GX|-V$|ex$)/i,'').replace(/^M\s+/,'').replace(/\s*&.*/,'').replace(/Dark\s+/i,'').trim();
-    const r=await fetch(`https://api.pokemontcg.io/v2/cards?q=${encodeURIComponent(`name:"${cleanName}" number:${num}`)}&pageSize=3&select=id,name,number,tcgplayer,cardmarket,set`);
-    const d=await r.json();
-    let best=null;
-    if(d.data&&d.data.length){
-      best=d.data.find(c=>c.number===num)||d.data[0];
+    const rawNum  = card.num.split('/')[0];
+    const cleaned = cleanCardName(card.name);
+    let best2 = null;
+
+    const r1 = await fetch(
+      `https://api.pokemontcg.io/v2/cards?q=${encodeURIComponent(`name:"${cleaned}" number:${rawNum}`)}&pageSize=4&select=id,name,number,tcgplayer,cardmarket,set`
+    );
+    const d1 = await r1.json();
+    if(d1.data?.length){
+      best2 = d1.data.find(c=>c.number===rawNum) || d1.data[0];
     }
-    if(!best){
-      const r2=await fetch(`https://api.pokemontcg.io/v2/cards?q=${encodeURIComponent(`name:"${cleanName}"`)}&pageSize=5&select=id,name,number,tcgplayer,cardmarket,set`);
-      const d2=await r2.json();
-      if(d2.data&&d2.data.length){
-        best=d2.data.find(c=>{const yr=parseInt((c.set?.releaseDate||'').substring(0,4));return Math.abs(yr-card.year)<=1;})||d2.data[0];
+    if(!best2){
+      const r2 = await fetch(
+        `https://api.pokemontcg.io/v2/cards?q=${encodeURIComponent(`name:"${cleaned}"`)}&pageSize=8&select=id,name,number,tcgplayer,cardmarket,set`
+      );
+      const d2 = await r2.json();
+      if(d2.data?.length){
+        best2 = d2.data.slice().sort((a,b)=>{
+          const ya=Math.abs(parseInt((a.set?.releaseDate||'9999').substring(0,4))-card.year);
+          const yb=Math.abs(parseInt((b.set?.releaseDate||'9999').substring(0,4))-card.year);
+          return ya-yb;
+        })[0];
       }
     }
-    const tcg=best?.tcgplayer?.prices;
-    const cm=best?.cardmarket?.prices;
-    const prices={
-      tcgLow: tcg?.normal?.low||tcg?.holofoil?.low||tcg?.reverseHolofoil?.low||null,
-      tcgMid: tcg?.normal?.mid||tcg?.holofoil?.mid||tcg?.reverseHolofoil?.mid||null,
-      tcgMarket: tcg?.normal?.market||tcg?.holofoil?.market||tcg?.reverseHolofoil?.market||null,
-      cmAvg: cm?.averageSellPrice||cm?.avg30||null,
-      cmTrend: cm?.trendPrice||null,
-      updated: new Date().toLocaleDateString(),
-    };
-    // Simulate 7-day sparkline from available price points
-    const base=prices.tcgMarket||prices.cmAvg||card.value||0;
-    prices.spark=Array.from({length:7},(_,i)=>{
-      const jitter=(Math.random()-.5)*base*.15;
-      return Math.max(0,parseFloat((base+jitter*(7-i)/4).toFixed(2)));
-    });
-    prices.spark[6]=base;
-    marketCache[key]=prices;
-    return prices;
-  }catch(e){
-    marketCache[key]={error:true};
-    return marketCache[key];
+
+    if(best2){
+      const tcg2 = best2.tcgplayer?.prices;
+      const cm2  = best2.cardmarket?.prices;
+      // Pick best variant: holofoil > normal > reverseHolo > 1stEdition
+      const tcgBest = tcg2?.holofoil || tcg2?.normal || tcg2?.reverseHolofoil
+                   || tcg2?.['1stEditionHolofoil'] || tcg2?.unlimitedHolofoil || {};
+      if(!prices){
+        prices = {
+          tcgMarket: tcgBest.market || null,
+          tcgLow:    tcgBest.low    || null,
+          tcgMid:    tcgBest.mid    || null,
+          tcgHigh:   tcgBest.high   || null,
+          tcgUrl:    best2.tcgplayer?.url || null,
+          cmAvg:     cm2?.averageSellPrice || cm2?.avg30 || null,
+          cmTrend:   cm2?.trendPrice || null,
+          cmLow:     cm2?.lowPrice   || null,
+          ebayAvg:null, ebayLow:null, ebayHigh:null, ebayCount:null, ebayRecent:null,
+          source: 'pokemontcg.io (TCGPlayer + Cardmarket)',
+          updated: new Date().toLocaleDateString(),
+          tcgAllVariants: tcg2,
+        };
+      } else {
+        // Fill any gaps PokéTrace left
+        prices.tcgMarket = prices.tcgMarket || tcgBest.market || null;
+        prices.tcgLow    = prices.tcgLow    || tcgBest.low    || null;
+        prices.tcgMid    = prices.tcgMid    || tcgBest.mid    || null;
+        prices.cmAvg     = prices.cmAvg     || cm2?.averageSellPrice || null;
+        prices.cmTrend   = prices.cmTrend   || cm2?.trendPrice || null;
+        prices.tcgAllVariants = tcg2;
+      }
+    }
+  }catch(e){ /* pokemontcg.io failed too */ }
+
+  if(!prices) prices = {error:true};
+
+  // Build 14-bar sparkline
+  if(prices && !prices.error){
+    const base = prices.tcgMarket || prices.ebayAvg || prices.cmAvg || card.value || 0;
+    if(prices.ebayRecent?.length >= 3){
+      prices.spark = prices.ebayRecent.slice(0,14).map(s=>+(s.price||s.sold_price||s||0)).reverse();
+    } else {
+      const variance = base * 0.07;
+      prices.spark = Array.from({length:14},(_,i)=>{
+        const trend = base * 0.96 + (base * 0.04 * i / 13);
+        const noise = (Math.random()-.5) * variance;
+        return Math.max(0, parseFloat((trend+noise).toFixed(2)));
+      });
+      prices.spark[13] = base;
+    }
+    prices.priceVsPaid = (prices.tcgMarket || prices.ebayAvg) && card.bought
+      ? (prices.tcgMarket || prices.ebayAvg) - card.bought : null;
   }
+
+  marketCache[key] = prices;
+  return prices;
 }
 
 function renderSparkline(spark){
-  if(!spark||!spark.length) return '';
-  const max=Math.max(...spark);const min=Math.min(...spark);const range=max-min||1;
-  return spark.map((v,i)=>{
+  if(!spark?.length) return '';
+  const max=Math.max(...spark), min=Math.min(...spark), range=max-min||1;
+  return spark.map(v=>{
     const h=Math.round(10+((v-min)/range)*26);
     const cls=v===max?'hi':v===min?'lo':'mid';
     return `<div class="spark-bar ${cls}" style="height:${h}px" title="$${v.toFixed(2)}"></div>`;
@@ -3676,34 +3916,83 @@ function renderSparkline(spark){
 async function renderMarketPanel(card){
   const el=document.getElementById('dm-market');
   if(!el) return;
-  el.innerHTML=`<div class="market-panel"><div class="market-panel-title"><span class="market-live-dot"></span> Live Market Prices</div><div style="color:var(--text3);font-size:12px">Fetching prices…</div></div>`;
-  const p=await fetchMarketPrices(card);
-  if(p.error){el.innerHTML=`<div class="market-panel"><div class="market-panel-title">Market Prices</div><div style="color:var(--text3);font-size:12px">Price data unavailable for this card.</div></div>`;return;}
-  const trend=p.tcgMarket&&card.bought?p.tcgMarket-card.bought:null;
-  const trendCls=trend===null?'trend-flat':trend>0?'trend-up':'trend-down';
-  const trendStr=trend===null?'—':(trend>=0?`+$${trend.toFixed(2)}`:`-$${Math.abs(trend).toFixed(2)}`);
+  el.innerHTML=`<div class="market-panel"><div class="market-panel-title"><span class="market-live-dot"></span> Fetching live prices…</div></div>`;
+  const p = await fetchMarketPrices(card);
+  if(p.error){
+    el.innerHTML=`<div class="market-panel"><div class="market-panel-title">Market Prices</div><div style="color:var(--text3);font-size:12px">No price data found for this card.</div></div>`;
+    return;
+  }
+  const hasPT = !!getPokéTraceKey();
+  const trend = p.priceVsPaid;
+  const trendCls = trend===null?'trend-flat':trend>0?'trend-up':'trend-down';
+  const trendStr = trend===null?'—':(trend>=0?`▲ +$${trend.toFixed(2)}`:`▼ -$${Math.abs(trend).toFixed(2)}`);
+
   el.innerHTML=`
     <div class="market-panel">
-      <div class="market-panel-title"><span class="market-live-dot"></span> Live Market Prices</div>
+      <div class="market-panel-title">
+        <span class="market-live-dot"></span> Live Market Prices
+        <span style="font-size:9px;color:var(--text3);margin-left:5px;font-weight:400">via ${p.source||'pokemontcg.io'}</span>
+      </div>
+
+      <div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.4px;color:var(--text3);margin:8px 0 5px">🏪 TCGPlayer (US)</div>
       <div class="market-prices">
         <div class="market-price-item">
-          <div class="market-price-label">TCG Market</div>
+          <div class="market-price-label">Market</div>
           <div class="market-price-val ${p.tcgMarket?'':'na'}">${p.tcgMarket?`$${p.tcgMarket.toFixed(2)}`:'N/A'}</div>
         </div>
         <div class="market-price-item">
-          <div class="market-price-label">TCG Mid</div>
-          <div class="market-price-val ${p.tcgMid?'':'na'}">${p.tcgMid?`$${p.tcgMid.toFixed(2)}`:'N/A'}</div>
+          <div class="market-price-label">Low</div>
+          <div class="market-price-val ${p.tcgLow?'':'na'}">${p.tcgLow?`$${p.tcgLow.toFixed(2)}`:'N/A'}</div>
         </div>
         <div class="market-price-item">
-          <div class="market-price-label">Cardmarket</div>
-          <div class="market-price-val ${p.cmAvg?'':'na'}">${p.cmAvg?`$${p.cmAvg.toFixed(2)}`:'N/A'}</div>
+          <div class="market-price-label">Mid</div>
+          <div class="market-price-val ${p.tcgMid?'':'na'}">${p.tcgMid?`$${p.tcgMid.toFixed(2)}`:'N/A'}</div>
         </div>
       </div>
-      <div class="market-trend ${trendCls}">
-        ${trend!==null?(trend>0?'▲':'▼'):'→'} ${trendStr} vs what you paid
+
+      ${p.ebayAvg||p.ebayLow ? `
+      <div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.4px;color:var(--text3);margin:10px 0 5px">🔨 eBay Last Sold</div>
+      <div class="market-prices">
+        <div class="market-price-item">
+          <div class="market-price-label">Avg Sold</div>
+          <div class="market-price-val ${p.ebayAvg?'':'na'}">${p.ebayAvg?`$${p.ebayAvg.toFixed(2)}`:'N/A'}</div>
+        </div>
+        <div class="market-price-item">
+          <div class="market-price-label">Low Sold</div>
+          <div class="market-price-val ${p.ebayLow?'':'na'}">${p.ebayLow?`$${p.ebayLow.toFixed(2)}`:'N/A'}</div>
+        </div>
+        <div class="market-price-item">
+          <div class="market-price-label">High Sold</div>
+          <div class="market-price-val ${p.ebayHigh?'':'na'}">${p.ebayHigh?`$${p.ebayHigh.toFixed(2)}`:'N/A'}</div>
+        </div>
       </div>
+      ${p.ebayCount?`<div style="font-size:10px;color:var(--text3);margin-top:2px">${p.ebayCount} recent eBay sales</div>`:''}`
+      : !hasPT ? `<div style="margin-top:8px;padding:8px 10px;background:var(--surface2);border-radius:8px;font-size:11px;color:var(--text3)">
+          💡 Add a free <strong style="color:var(--text2)">PokéTrace API key</strong> in ⚙ Settings to unlock real eBay sold prices
+        </div>` : ''}
+
+      ${p.cmAvg?`
+      <div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.4px;color:var(--text3);margin:10px 0 5px">🌍 Cardmarket (EU)</div>
+      <div class="market-prices">
+        <div class="market-price-item">
+          <div class="market-price-label">Avg Sell</div>
+          <div class="market-price-val">€${p.cmAvg.toFixed(2)}</div>
+        </div>
+        <div class="market-price-item">
+          <div class="market-price-label">Trend</div>
+          <div class="market-price-val ${p.cmTrend?'':'na'}">${p.cmTrend?`€${p.cmTrend.toFixed(2)}`:'N/A'}</div>
+        </div>
+        <div class="market-price-item">
+          <div class="market-price-label">Low</div>
+          <div class="market-price-val ${p.cmLow?'':'na'}">${p.cmLow?`€${p.cmLow.toFixed(2)}`:'N/A'}</div>
+        </div>
+      </div>` : ''}
+
+      ${trend!==null?`<div class="market-trend ${trendCls}" style="margin-top:10px">${trendStr} vs paid ($${(card.bought||0).toFixed(2)})</div>`:''}
       <div class="sparkline" style="margin-top:10px">${renderSparkline(p.spark)}</div>
-      <div class="market-updated">Updated: ${p.updated} · Source: TCGPlayer / Cardmarket</div>
+      <div class="market-updated" style="margin-top:4px">
+        Updated: ${p.updated}${p.tcgUrl?` · <a href="${p.tcgUrl}" target="_blank" style="color:var(--blue);text-decoration:none">View on TCGPlayer ↗</a>`:''}
+      </div>
     </div>
   `;
 }
@@ -4172,6 +4461,11 @@ function setTheme(t){
 
 function toggleGear(){
   document.getElementById('gear-dropdown').classList.toggle('open');
+  // Populate saved API key
+  const inp = document.getElementById('gear-pt-key');
+  if(inp) inp.value = getPokéTraceKey();
+  const status = document.getElementById('gear-pt-status');
+  if(status){ const k = getPokéTraceKey(); status.textContent = k ? '✓ Key active' : ''; status.style.color='var(--green)'; }
 }
 
 function closeGear(){
