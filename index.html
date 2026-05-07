@@ -790,7 +790,7 @@ select:focus,input:focus{border-color:var(--border2)}
 main{ display:none!important }
 header{ display:none!important }
 main.auth-ready{ display:block!important }
-header.auth-ready{ display:flex!important }
+header.auth-ready{ display:grid!important }
 
 /* ── Space Grotesk for all prices ── */
 .scan-item-price,.cs-result-price,.cs-detail-price,.scan-match-price,
@@ -3845,47 +3845,69 @@ const THEME_SILHOUETTES={
   </svg>`},
   // Electric: Pichu → Pikachu → Raichu
   electric:{svg:`<svg viewBox="0 0 520 380" xmlns="http://www.w3.org/2000/svg" style="position:fixed;bottom:0;right:0;width:600px;height:420px;opacity:.065;pointer-events:none;z-index:0">
-    <!-- Pichu -->
-    <g transform="translate(15,210)">
-      <ellipse cx="45" cy="140" rx="28" ry="10" fill="currentColor"/>
-      <ellipse cx="45" cy="105" rx="32" ry="32" fill="currentColor"/>
-      <path d="M20 75 C8 42 12 10 28 8" fill="currentColor"/>
-      <path d="M70 75 C82 42 78 10 62 8" fill="currentColor"/>
-      <ellipse cx="45" cy="80" rx="30" ry="32" fill="currentColor"/>
-      <ellipse cx="22" cy="118" rx="10" ry="18" fill="currentColor"/>
-      <ellipse cx="68" cy="118" rx="10" ry="18" fill="currentColor"/>
-      <ellipse cx="28" cy="140" rx="10" ry="14" fill="currentColor"/>
-      <ellipse cx="62" cy="140" rx="10" ry="14" fill="currentColor"/>
-      <path d="M45 135 L38 155 L52 155 Z" fill="currentColor"/>
+    <!-- Jolteon -->
+    <g transform="translate(8,160)">
+      <!-- spiky fur collar -->
+      <path d="M28 80 L18 55 L32 72 L30 45 L42 68 L48 38 L54 68 L62 44 L66 72 L78 54 L72 80" fill="currentColor"/>
+      <!-- body -->
+      <ellipse cx="50" cy="118" rx="36" ry="42" fill="currentColor"/>
+      <!-- head -->
+      <ellipse cx="50" cy="62" rx="28" ry="26" fill="currentColor"/>
+      <!-- ears pointy -->
+      <path d="M28 48 L20 18 L38 42" fill="currentColor"/>
+      <path d="M72 48 L80 18 L62 42" fill="currentColor"/>
+      <!-- legs -->
+      <ellipse cx="26" cy="148" rx="12" ry="22" fill="currentColor"/>
+      <ellipse cx="74" cy="148" rx="12" ry="22" fill="currentColor"/>
+      <ellipse cx="30" cy="168" rx="10" ry="14" fill="currentColor"/>
+      <ellipse cx="70" cy="168" rx="10" ry="14" fill="currentColor"/>
+      <!-- spiky tail -->
+      <path d="M78 108 L100 88 L88 98 L112 75 L96 88 L118 68 L100 82 L122 62" stroke="currentColor" stroke-width="9" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
     </g>
-    <!-- Pikachu -->
-    <g transform="translate(170,150)">
-      <ellipse cx="65" cy="198" rx="42" ry="14" fill="currentColor"/>
-      <ellipse cx="65" cy="148" rx="48" ry="46" fill="currentColor"/>
-      <path d="M30 100 C12 55 18 12 38 8" fill="currentColor"/>
-      <path d="M100 100 C118 55 112 12 92 8" fill="currentColor"/>
-      <ellipse cx="65" cy="108" rx="44" ry="46" fill="currentColor"/>
-      <ellipse cx="30" cy="168" rx="15" ry="26" fill="currentColor"/>
-      <ellipse cx="100" cy="168" rx="15" ry="26" fill="currentColor"/>
-      <ellipse cx="38" cy="195" rx="13" ry="20" fill="currentColor"/>
-      <ellipse cx="92" cy="195" rx="13" ry="20" fill="currentColor"/>
-      <!-- Tail lightning bolt -->
-      <path d="M95 178 L120 158 L108 148 L132 125 L115 118 L138 95" stroke="currentColor" stroke-width="10" fill="none" stroke-linejoin="round"/>
+    <!-- Raikou -->
+    <g transform="translate(168,100)">
+      <!-- body big cat -->
+      <ellipse cx="90" cy="200" rx="72" ry="52" fill="currentColor"/>
+      <!-- head -->
+      <ellipse cx="30" cy="148" rx="38" ry="34" fill="currentColor"/>
+      <!-- mane spikes -->
+      <path d="M18 120 L8 88 L24 112 L20 78 L34 108 L38 72 L46 106 L55 76 L58 108 L68 82 L68 112" fill="currentColor"/>
+      <!-- ears -->
+      <path d="M8 128 L2 100 L18 122" fill="currentColor"/>
+      <path d="M50 120 L52 92 L62 118" fill="currentColor"/>
+      <!-- legs -->
+      <ellipse cx="42" cy="245" rx="16" ry="38" fill="currentColor"/>
+      <ellipse cx="82" cy="252" rx="16" ry="38" fill="currentColor"/>
+      <ellipse cx="122" cy="248" rx="16" ry="36" fill="currentColor"/>
+      <ellipse cx="152" cy="240" rx="14" ry="34" fill="currentColor"/>
+      <!-- paws -->
+      <ellipse cx="42" cy="280" rx="14" ry="12" fill="currentColor"/>
+      <ellipse cx="82" cy="287" rx="14" ry="12" fill="currentColor"/>
+      <ellipse cx="122" cy="282" rx="14" ry="11" fill="currentColor"/>
+      <ellipse cx="152" cy="272" rx="13" ry="11" fill="currentColor"/>
+      <!-- tail -->
+      <path d="M160 215 C188 200 205 175 198 150 C192 130 178 128 175 140" stroke="currentColor" stroke-width="10" fill="none" stroke-linecap="round"/>
     </g>
-    <!-- Raichu -->
-    <g transform="translate(340,80)">
-      <ellipse cx="95" cy="280" rx="60" ry="20" fill="currentColor"/>
-      <ellipse cx="95" cy="200" rx="72" ry="72" fill="currentColor"/>
-      <ellipse cx="95" cy="118" rx="58" ry="58" fill="currentColor"/>
-      <path d="M42 90 C18 42 25 5 48 5" fill="currentColor"/>
-      <path d="M148 90 C172 42 165 5 142 5" fill="currentColor"/>
-      <ellipse cx="38" cy="230" rx="22" ry="42" fill="currentColor"/>
-      <ellipse cx="152" cy="230" rx="22" ry="42" fill="currentColor"/>
-      <ellipse cx="48" cy="276" rx="18" ry="25" fill="currentColor"/>
-      <ellipse cx="142" cy="276" rx="18" ry="25" fill="currentColor"/>
-      <!-- Long tail -->
-      <path d="M155 235 C192 225 218 200 215 170 C212 140 190 130 175 145 L185 148 L165 168 L190 162 L178 180 L205 172 L192 190 L215 185 L202 205" stroke="currentColor" stroke-width="10" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
-      <ellipse cx="218" cy="172" rx="16" ry="10" fill="currentColor"/>
+    <!-- Zapdos -->
+    <g transform="translate(348,30)">
+      <!-- body -->
+      <ellipse cx="80" cy="200" rx="55" ry="70" fill="currentColor"/>
+      <!-- head -->
+      <ellipse cx="80" cy="108" rx="40" ry="38" fill="currentColor"/>
+      <!-- lightning beak -->
+      <path d="M80 88 L68 68 L76 78 L70 55 L82 72 L86 52 L88 72 L95 60 L90 78 L98 68 L80 88" fill="currentColor"/>
+      <!-- crest spikes -->
+      <path d="M60 80 L48 52 L62 74 L58 44 L68 70" fill="currentColor"/>
+      <path d="M100 80 L112 52 L98 74 L102 44 L92 70" fill="currentColor"/>
+      <!-- wings jagged -->
+      <path d="M25 150 L0 120 L18 148 L-5 135 L15 158 L-8 148 L12 168 L0 162 L18 178" stroke="currentColor" stroke-width="12" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+      <path d="M135 150 L162 120 L144 148 L167 135 L147 158 L170 148 L150 168 L162 162 L144 178" stroke="currentColor" stroke-width="12" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+      <!-- legs -->
+      <ellipse cx="60" cy="262" rx="14" ry="30" fill="currentColor"/>
+      <ellipse cx="100" cy="262" rx="14" ry="30" fill="currentColor"/>
+      <!-- talons -->
+      <path d="M48 290 L38 308 M60 292 L58 312 M72 290 L78 308" stroke="currentColor" stroke-width="7" stroke-linecap="round" fill="none"/>
+      <path d="M88 290 L78 308 M100 292 L98 312 M112 290 L118 308" stroke="currentColor" stroke-width="7" stroke-linecap="round" fill="none"/>
     </g>
   </svg>`},
   // Psychic: Abra → Kadabra → Alakazam
@@ -4058,49 +4080,65 @@ const THEME_SILHOUETTES={
   </svg>`},
   // Galaxy: Cleffa → Clefairy → Clefable
   galaxy:{svg:`<svg viewBox="0 0 520 380" xmlns="http://www.w3.org/2000/svg" style="position:fixed;bottom:0;right:0;width:600px;height:420px;opacity:.05;pointer-events:none;z-index:0">
-    <!-- Cleffa (star shape) -->
-    <g transform="translate(15,195)">
-      <circle cx="48" cy="95" r="35" fill="currentColor"/>
-      <ellipse cx="20" cy="118" rx="12" ry="20" fill="currentColor"/>
-      <ellipse cx="76" cy="118" rx="12" ry="20" fill="currentColor"/>
-      <ellipse cx="32" cy="138" rx="10" ry="16" fill="currentColor"/>
-      <ellipse cx="64" cy="138" rx="10" ry="16" fill="currentColor"/>
-      <path d="M48 62 L52 42 L56 62 L72 50 L60 65 L78 68 L62 75" fill="currentColor"/>
-      <path d="M22 72 C10 50 18 25 30 30" fill="currentColor"/>
-      <path d="M74 72 C86 50 78 25 66 30" fill="currentColor"/>
+    <!-- Cosmog - tiny wisp with flowing nebula tail -->
+    <g transform="translate(18,195)">
+      <!-- wispy tail/cloak -->
+      <path d="M38 100 C15 125 8 155 18 175 C28 195 20 210 30 220" stroke="currentColor" stroke-width="14" stroke-linecap="round" fill="none" opacity=".6"/>
+      <path d="M58 100 C75 128 80 158 68 178 C58 198 65 212 55 222" stroke="currentColor" stroke-width="14" stroke-linecap="round" fill="none" opacity=".6"/>
+      <path d="M48 105 C48 140 48 170 48 200 C48 215 44 225 48 232" stroke="currentColor" stroke-width="10" stroke-linecap="round" fill="none" opacity=".5"/>
+      <!-- body orb -->
+      <circle cx="48" cy="75" r="38" fill="currentColor"/>
+      <!-- small dot eyes -->
+      <circle cx="35" cy="68" r="5" fill="currentColor" opacity=".4"/>
+      <circle cx="61" cy="68" r="5" fill="currentColor" opacity=".4"/>
+      <!-- tiny star flecks -->
+      <circle cx="22" cy="55" r="3" fill="currentColor"/>
+      <circle cx="74" cy="60" r="3" fill="currentColor"/>
+      <circle cx="48" cy="30" r="4" fill="currentColor"/>
     </g>
-    <!-- Clefairy -->
-    <g transform="translate(172,148)">
-      <ellipse cx="68" cy="210" rx="45" ry="16" fill="currentColor"/>
-      <ellipse cx="68" cy="155" rx="55" ry="52" fill="currentColor"/>
-      <ellipse cx="22" cy="172" rx="17" ry="32" fill="currentColor"/>
-      <ellipse cx="114" cy="172" rx="17" ry="32" fill="currentColor"/>
-      <ellipse cx="35" cy="205" rx="15" ry="22" fill="currentColor"/>
-      <ellipse cx="101" cy="205" rx="15" ry="22" fill="currentColor"/>
-      <circle cx="68" cy="82" r="48" fill="currentColor"/>
-      <path d="M32 50 C16 22 26 -2 42 6" fill="currentColor"/>
-      <path d="M104 50 C120 22 110 -2 94 6" fill="currentColor"/>
-      <!-- Wing nubs -->
-      <ellipse cx="14" cy="138" rx="14" ry="25" transform="rotate(-20,14,138)" fill="currentColor"/>
-      <ellipse cx="122" cy="138" rx="14" ry="25" transform="rotate(20,122,138)" fill="currentColor"/>
-      <path d="M68 65 L75 40 L80 60 L100 45 L84 62" fill="currentColor"/>
+    <!-- Lunala - bat/crescent moon legendary -->
+    <g transform="translate(155,30)">
+      <!-- huge wingspan -->
+      <path d="M5 180 C-5 140 0 95 25 70 C45 48 65 50 75 70 C85 90 80 120 90 140 C100 120 95 90 105 70 C115 50 135 48 155 70 C180 95 185 140 175 180 C160 155 145 145 130 160 C118 172 110 185 90 188 C70 185 62 172 50 160 C35 145 20 155 5 180Z" fill="currentColor"/>
+      <!-- body -->
+      <ellipse cx="90" cy="145" rx="30" ry="35" fill="currentColor"/>
+      <!-- head crescent -->
+      <path d="M62 85 C55 60 62 30 78 22 C68 38 68 60 80 75 C90 88 105 92 118 85 C108 98 88 102 75 95 C70 92 65 90 62 85Z" fill="currentColor"/>
+      <!-- third eye star -->
+      <path d="M90 55 L93 45 L96 55 L106 55 L98 61 L101 71 L90 65 L79 71 L82 61 L74 55Z" fill="currentColor"/>
+      <!-- tail -->
+      <path d="M80 178 L72 210 L68 235 M100 178 L108 210 L112 235" stroke="currentColor" stroke-width="8" stroke-linecap="round" fill="none"/>
+      <!-- leg claws -->
+      <path d="M72 235 L64 252 M68 235 L68 254 M74 236 L76 254" stroke="currentColor" stroke-width="5" stroke-linecap="round" fill="none"/>
+      <path d="M110 235 L118 252 M112 235 L112 254 M106 236 L104 254" stroke="currentColor" stroke-width="5" stroke-linecap="round" fill="none"/>
     </g>
-    <!-- Clefable -->
-    <g transform="translate(340,28)">
-      <ellipse cx="100" cy="330" rx="62" ry="22" fill="currentColor"/>
-      <ellipse cx="100" cy="235" rx="75" ry="88" fill="currentColor"/>
-      <ellipse cx="28" cy="262" rx="24" ry="55" fill="currentColor"/>
-      <ellipse cx="172" cy="262" rx="24" ry="55" fill="currentColor"/>
-      <ellipse cx="48" cy="325" rx="20" ry="30" fill="currentColor"/>
-      <ellipse cx="152" cy="325" rx="20" ry="30" fill="currentColor"/>
-      <circle cx="100" cy="118" r="65" fill="currentColor"/>
-      <path d="M50 72 C28 32 40 -2 60 8" fill="currentColor"/>
-      <path d="M150 72 C172 32 160 -2 140 8" fill="currentColor"/>
-      <!-- Larger wings -->
-      <ellipse cx="12" cy="210" rx="20" ry="45" transform="rotate(-15,12,210)" fill="currentColor"/>
-      <ellipse cx="188" cy="210" rx="20" ry="45" transform="rotate(15,188,210)" fill="currentColor"/>
-      <!-- Star on head -->
-      <path d="M100 52 L107 32 L114 52 L132 45 L118 58 L126 78 L108 65 L100 85 L92 65 L74 78 L82 58 L68 45 Z" fill="currentColor"/>
+    <!-- Solgaleo - lion sun legendary -->
+    <g transform="translate(345,55)">
+      <!-- sun mane spikes -->
+      <path d="M80 50 L72 20 L82 45 L78 10 L88 42 L92 8 L96 42 L102 12 L104 44 L114 22 L108 48" fill="currentColor"/>
+      <path d="M30 80 L5 65 L28 88 L2 82 L26 98 M130 80 L155 65 L132 88 L158 82 L134 98" fill="currentColor"/>
+      <!-- mane ring -->
+      <circle cx="90" cy="110" r="68" fill="currentColor"/>
+      <circle cx="90" cy="110" r="48" fill="currentColor" opacity="0"/>
+      <!-- face inner -->
+      <ellipse cx="90" cy="112" rx="46" ry="44" fill="currentColor"/>
+      <!-- forehead star -->
+      <path d="M90 78 L94 66 L98 78 L110 78 L100 86 L104 98 L90 90 L76 98 L80 86 L70 78Z" fill="currentColor" opacity=".35"/>
+      <!-- body -->
+      <ellipse cx="90" cy="230" rx="58" ry="65" fill="currentColor"/>
+      <!-- legs -->
+      <ellipse cx="45" cy="285" rx="18" ry="40" fill="currentColor"/>
+      <ellipse cx="80" cy="292" rx="18" ry="40" fill="currentColor"/>
+      <ellipse cx="100" cy="292" rx="18" ry="40" fill="currentColor"/>
+      <ellipse cx="135" cy="285" rx="18" ry="40" fill="currentColor"/>
+      <!-- paws -->
+      <ellipse cx="45" cy="322" rx="16" ry="13" fill="currentColor"/>
+      <ellipse cx="80" cy="330" rx="16" ry="13" fill="currentColor"/>
+      <ellipse cx="100" cy="330" rx="16" ry="13" fill="currentColor"/>
+      <ellipse cx="135" cy="322" rx="16" ry="13" fill="currentColor"/>
+      <!-- tail -->
+      <path d="M145 248 C172 235 188 215 182 192" stroke="currentColor" stroke-width="12" stroke-linecap="round" fill="none"/>
+      <path d="M182 192 L175 175 L188 182 L178 165 L192 175" fill="currentColor"/>
     </g>
   </svg>`},
 };
@@ -4199,12 +4237,11 @@ async function loadSaved() {
         if (d.nextId) nextId = parseInt(d.nextId) || nextId;
         return;
       }
-      // First login — save defaults to Firestore
       await saveAll();
       return;
     }
-  } catch(e) { console.warn('Firestore load failed', e); }
-  // Fallback: localStorage
+  } catch(e) { console.warn('Firebase load failed, trying localStorage:', e); }
+  // Fallback: localStorage — always works offline/cross-domain
   try {
     const sc = localStorage.getItem('boc_cards');
     const sb = localStorage.getItem('boc_binders');
@@ -4216,7 +4253,8 @@ async function loadSaved() {
     if (sbi) bins = JSON.parse(sbi);
     if (sp) products = JSON.parse(sp);
     if (sn) nextId = parseInt(sn) || nextId;
-  } catch(e) { console.warn('localStorage load failed', e); }
+  } catch(e) { console.warn('localStorage load failed, using defaults:', e); }
+  // Always resolves — never throws
 }
 
 // ── AUTH SCREEN ──
@@ -4546,9 +4584,8 @@ try { window.suppliesData = JSON.parse(localStorage.getItem('boc_supplies') || '
 
     if (mode === 'verifyEmail' && oobCode) {
       // Show a loading state while we process
-      document.querySelector('main').style.display = 'none';
-      document.querySelector('header').style.display = 'none';
-      document.getElementById('auth-screen').classList.remove('show');
+      // main/header already hidden by CSS — just hide the auth screen
+      document.getElementById('auth-screen').style.display = 'none';
 
       const loadingEl = document.createElement('div');
       loadingEl.id = 'verify-redirect-screen';
@@ -4593,11 +4630,18 @@ try { window.suppliesData = JSON.parse(localStorage.getItem('boc_supplies') || '
         if (redirectScreen) redirectScreen.remove();
         window.currentUser = user;
         if (window.setCurrentUser) window.setCurrentUser(user);
+
+        // Show the app immediately — don't wait for data load
         document.getElementById('auth-screen').style.display = 'none';
         document.querySelector('main').classList.add('auth-ready');
         document.querySelector('header').classList.add('auth-ready');
+
+        // Load data then render — wrapped so UI never stays blank
+        try {
+          if (window.loadSaved) await window.loadSaved();
+        } catch(e) { console.warn('loadSaved error:', e); }
+
         if (window.injectUserPill) window.injectUserPill();
-        if (window.loadSaved) await window.loadSaved();
         if (window.switchTab) window.switchTab('collection');
       } else if (!mode) {
         document.getElementById('auth-screen').style.display = 'flex';
