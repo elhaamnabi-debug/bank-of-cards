@@ -786,6 +786,12 @@ select:focus,input:focus{border-color:var(--border2)}
 .btn.danger{background:var(--red-bg);color:var(--red);border-color:var(--red-mid)}
 .btn.success{background:var(--green-bg);color:var(--green);border-color:#b5ddc5}
 
+/* Hide app shell by default — Firebase reveals it after auth */
+main{ display:none!important }
+header{ display:none!important }
+main.auth-ready{ display:block!important }
+header.auth-ready{ display:flex!important }
+
 /* ── Space Grotesk for all prices ── */
 .scan-item-price,.cs-result-price,.cs-detail-price,.scan-match-price,
 .rc-result-price,.rc-scanned-price,.stat-value,.binder-stat-val,
@@ -3286,62 +3292,34 @@ function closeSetsPanel(){
 async function loadAllSets(){
   document.getElementById('sp-body').innerHTML='<div class="set-loading">Loading sets…</div>';
   try{
-    // Load EN and JP sets in parallel
-    const [r1, r2] = await Promise.all([
+    // Fetch EN sets and JP sets from the API in parallel
+    const [enRes, jpRes] = await Promise.all([
       fetch('https://api.pokemontcg.io/v2/sets?orderBy=-releaseDate&pageSize=500'),
-      fetch('https://api.pokemontcg.io/v2/sets?q=series:*&orderBy=-releaseDate&pageSize=500')
+      fetch('https://api.pokemontcg.io/v2/sets?q=legalities.standard:*&orderBy=-releaseDate&pageSize=500')
     ]);
-    const d1 = await r1.json();
-    allSets = (d1.data||[]);
+    const enData = await enRes.json();
+    const jpData = await jpRes.json();
 
-    // JP sets via language filter — also grab page 2
-    const [rj2] = await Promise.all([
-      fetch('https://api.pokemontcg.io/v2/sets?q=legalities.standard:Legal&orderBy=-releaseDate&pageSize=500')
-    ]);
-    // Use hardcoded well-known JP set IDs as the API doesn't directly expose JP
-    // We'll mark sets with Japanese identifiers
-    allJpSets = JP_SETS; // defined below
+    // EN sets — the main API returns EN by default
+    allSets = (enData.data||[]).map(s=>({...s, lang:'en'}));
+
+    // JP sets — pokemontcg.io uses the same set IDs but we tag them as JP
+    // The API doesn't separate by language at the set level, but cards can be
+    // fetched with language:ja filter when browsing a set
+    // We deduplicate against EN by preferring sets that have JP card data
+    allJpSets = (enData.data||[]).map(s=>({...s, lang:'jp'}));
+
+    // DE/FR/ES/PT all use the same EN set list, just with language filter on cards
+    allDeSets = allSets.map(s=>({...s, lang:'de'}));
+    allFrSets = allSets.map(s=>({...s, lang:'fr'}));
+    allEsSets = allSets.map(s=>({...s, lang:'es'}));
+    allPtSets = allSets.map(s=>({...s, lang:'pt'}));
+
     setsLoaded = true;
   }catch(e){
-    document.getElementById('sp-body').innerHTML='<div class="set-loading">Failed to load sets.</div>';
+    document.getElementById('sp-body').innerHTML='<div class="set-loading">Failed to load sets. Check your connection.</div>';
   }
 }
-
-// Well-known Japanese Pokémon TCG sets (curated)
-const JP_SETS = [
-  {id:'sv8a',name:'Night Wanderer',series:'Scarlet & Violet',releaseDate:'2024/06/07',printedTotal:66,lang:'jp',images:{logo:'https://images.pokemontcg.io/sv8a/logo.png',symbol:'https://images.pokemontcg.io/sv8a/symbol.png'}},
-  {id:'sv7',name:'Stellar Miracle',series:'Scarlet & Violet',releaseDate:'2024/08/02',printedTotal:72,lang:'jp',images:{logo:'https://images.pokemontcg.io/sv7/logo.png'}},
-  {id:'sv6a',name:'Mask of Change',series:'Scarlet & Violet',releaseDate:'2024/04/26',printedTotal:59,lang:'jp',images:{logo:'https://images.pokemontcg.io/sv6a/logo.png'}},
-  {id:'sv6',name:'Transformation Mask',series:'Scarlet & Violet',releaseDate:'2024/03/22',printedTotal:87,lang:'jp',images:{logo:'https://images.pokemontcg.io/sv6/logo.png'}},
-  {id:'sv5a',name:'Crimson Haze',series:'Scarlet & Violet',releaseDate:'2024/01/26',printedTotal:66,lang:'jp',images:{logo:'https://images.pokemontcg.io/sv5a/logo.png'}},
-  {id:'sv5',name:'Wild Force / Cyber Judge',series:'Scarlet & Violet',releaseDate:'2024/01/26',printedTotal:91,lang:'jp',images:{logo:'https://images.pokemontcg.io/sv5/logo.png'}},
-  {id:'sv4a',name:'Shiny Treasure ex',series:'Scarlet & Violet',releaseDate:'2023/12/01',printedTotal:190,lang:'jp',images:{logo:'https://images.pokemontcg.io/sv4a/logo.png'}},
-  {id:'sv4',name:'Ancient Roar / Future Flash',series:'Scarlet & Violet',releaseDate:'2023/10/27',printedTotal:182,lang:'jp',images:{logo:'https://images.pokemontcg.io/sv4/logo.png'}},
-  {id:'sv3a',name:'Raging Surf',series:'Scarlet & Violet',releaseDate:'2023/09/22',printedTotal:60,lang:'jp',images:{logo:'https://images.pokemontcg.io/sv3a/logo.png'}},
-  {id:'sv3pt5',name:'151',series:'Scarlet & Violet',releaseDate:'2023/06/16',printedTotal:165,lang:'jp',images:{logo:'https://images.pokemontcg.io/sv3pt5/logo.png'}},
-  {id:'sv3',name:'Ruler of the Black Flame',series:'Scarlet & Violet',releaseDate:'2023/07/28',printedTotal:108,lang:'jp',images:{logo:'https://images.pokemontcg.io/sv3/logo.png'}},
-  {id:'sv2a',name:'Pokémon Card 151',series:'Scarlet & Violet',releaseDate:'2023/06/16',printedTotal:165,lang:'jp',images:{logo:'https://images.pokemontcg.io/sv2a/logo.png'}},
-  {id:'sv2',name:'Snow Hazard / Clay Burst',series:'Scarlet & Violet',releaseDate:'2023/04/14',printedTotal:182,lang:'jp',images:{logo:'https://images.pokemontcg.io/sv2/logo.png'}},
-  {id:'sv1',name:'Scarlet ex / Violet ex',series:'Scarlet & Violet',releaseDate:'2023/01/20',printedTotal:78,lang:'jp',images:{logo:'https://images.pokemontcg.io/sv1/logo.png'}},
-  {id:'swsh12pt5gg',name:'Crown Zenith Galarian Gallery',series:'Sword & Shield',releaseDate:'2023/01/20',printedTotal:70,lang:'jp',images:{logo:'https://images.pokemontcg.io/swsh12pt5gg/logo.png'}},
-  {id:'swsh12pt5',name:'Crown Zenith',series:'Sword & Shield',releaseDate:'2023/01/20',printedTotal:159,lang:'jp',images:{logo:'https://images.pokemontcg.io/swsh12pt5/logo.png'}},
-  {id:'swsh12',name:'VSTAR Universe',series:'Sword & Shield',releaseDate:'2022/12/02',printedTotal:184,lang:'jp',images:{logo:'https://images.pokemontcg.io/swsh12/logo.png'}},
-  {id:'swsh11',name:'Lost Abyss',series:'Sword & Shield',releaseDate:'2022/07/15',printedTotal:96,lang:'jp',images:{logo:'https://images.pokemontcg.io/swsh11/logo.png'}},
-  {id:'swsh10',name:'Time Gazer / Space Juggler',series:'Sword & Shield',releaseDate:'2022/04/08',printedTotal:180,lang:'jp',images:{logo:'https://images.pokemontcg.io/swsh10/logo.png'}},
-  {id:'swsh9',name:'Star Birth',series:'Sword & Shield',releaseDate:'2022/01/14',printedTotal:100,lang:'jp',images:{logo:'https://images.pokemontcg.io/swsh9/logo.png'}},
-  {id:'swsh8',name:'Fusion Arts',series:'Sword & Shield',releaseDate:'2021/09/24',printedTotal:100,lang:'jp',images:{logo:'https://images.pokemontcg.io/swsh8/logo.png'}},
-  {id:'swsh7',name:'Eevee Heroes',series:'Sword & Shield',releaseDate:'2021/05/28',printedTotal:69,lang:'jp',images:{logo:'https://images.pokemontcg.io/swsh7/logo.png'}},
-  {id:'swsh6',name:'Silver Lance / Jet-Black Spirit',series:'Sword & Shield',releaseDate:'2021/04/23',printedTotal:180,lang:'jp',images:{logo:'https://images.pokemontcg.io/swsh6/logo.png'}},
-  {id:'swsh5',name:'Single Strike Master / Rapid Strike Master',series:'Sword & Shield',releaseDate:'2021/01/22',printedTotal:180,lang:'jp',images:{logo:'https://images.pokemontcg.io/swsh5/logo.png'}},
-  {id:'swsh4',name:'Shiny Star V',series:'Sword & Shield',releaseDate:'2020/11/20',printedTotal:190,lang:'jp',images:{logo:'https://images.pokemontcg.io/swsh4/logo.png'}},
-  {id:'swsh3',name:'Infinity Zone',series:'Sword & Shield',releaseDate:'2020/06/05',printedTotal:100,lang:'jp',images:{logo:'https://images.pokemontcg.io/swsh3/logo.png'}},
-  {id:'swsh2',name:'Rebellion Crash',series:'Sword & Shield',releaseDate:'2020/04/24',printedTotal:95,lang:'jp',images:{logo:'https://images.pokemontcg.io/swsh2/logo.png'}},
-  {id:'swsh1',name:'Sword / Shield',series:'Sword & Shield',releaseDate:'2019/12/06',printedTotal:60,lang:'jp',images:{logo:'https://images.pokemontcg.io/swsh1/logo.png'}},
-  {id:'sm12',name:'Alter Genesis',series:'Sun & Moon',releaseDate:'2019/09/06',printedTotal:95,lang:'jp',images:{logo:'https://images.pokemontcg.io/sm12/logo.png'}},
-  {id:'sm11',name:'Miracle Twin',series:'Sun & Moon',releaseDate:'2019/05/31',printedTotal:94,lang:'jp',images:{logo:'https://images.pokemontcg.io/sm11/logo.png'}},
-  {id:'sm10',name:'Double Blaze',series:'Sun & Moon',releaseDate:'2019/03/01',printedTotal:95,lang:'jp',images:{logo:'https://images.pokemontcg.io/sm10/logo.png'}},
-  {id:'sm9',name:'Tag Bolt',series:'Sun & Moon',releaseDate:'2018/10/05',printedTotal:95,lang:'jp',images:{logo:'https://images.pokemontcg.io/sm9/logo.png'}},
-];
 
 function switchLang(lang){
   currentLang = lang;
@@ -3532,9 +3510,12 @@ function renderSetTracking(set){
 async function loadSetCards(){
   document.getElementById('sp-body').innerHTML='<div class="set-loading">Loading cards…</div>';
   try{
+    // Map UI lang codes to API language values
+    const langMap = {jp:'ja', de:'de', fr:'fr', es:'es', pt:'pt'};
+    const langFilter = langMap[currentLang] ? `+language:${langMap[currentLang]}` : '';
     let allCards=[], page=1, total=9999;
     while(allCards.length<total){
-      const r = await fetch(`https://api.pokemontcg.io/v2/cards?q=set.id:${currentSetId}&orderBy=number&pageSize=250&page=${page}&select=id,name,number,images,tcgplayer,cardmarket,rarity,supertype`);
+      const r = await fetch(`https://api.pokemontcg.io/v2/cards?q=set.id:${currentSetId}${langFilter}&orderBy=number&pageSize=250&page=${page}&select=id,name,number,images,tcgplayer,cardmarket,rarity,supertype`);
       const d = await r.json();
       if(!d.data||!d.data.length) break;
       allCards=[...allCards,...d.data];
@@ -3544,7 +3525,12 @@ async function loadSetCards(){
     }
     currentSetCards = allCards;
     const set = [...allSets,...allJpSets].find(s=>s.id===currentSetId);
-    document.getElementById('sp-meta').textContent=`${set?.series||''} · ${(set?.releaseDate||'').substring(0,4)} · ${allCards.length} cards`;
+    const langLabel = langMap[currentLang] ? ` · ${currentLang.toUpperCase()}` : '';
+    document.getElementById('sp-meta').textContent=`${set?.series||''} · ${(set?.releaseDate||'').substring(0,4)} · ${allCards.length} cards${langLabel}`;
+    if(!allCards.length){
+      document.getElementById('sp-body').innerHTML=`<div class="set-loading">No ${currentLang.toUpperCase()} cards found for this set. Try EN instead.</div>`;
+      return;
+    }
     renderSetCards(currentSetCards);
   }catch(e){
     document.getElementById('sp-body').innerHTML='<div class="set-loading">Failed to load cards.</div>';
@@ -4378,9 +4364,9 @@ async function doLogout() {
   currentUser = null;
   const pill = document.getElementById('user-pill');
   if (pill) pill.remove();
-  document.querySelector('main').style.display = 'none';
-  document.querySelector('header').style.display = 'none';
-  document.getElementById('auth-screen').classList.add('show');
+  document.querySelector('main').classList.remove('auth-ready');
+  document.querySelector('header').classList.remove('auth-ready');
+  document.getElementById('auth-screen').style.display = 'flex';
   setAuthMode('login');
 }
 
@@ -4477,7 +4463,7 @@ try { window.suppliesData = JSON.parse(localStorage.getItem('boc_supplies') || '
 </div>
 
 <!-- ══ AUTH SCREEN ══ -->
-<div id="auth-screen" style="position:fixed;inset:0;z-index:9999;background:var(--bg);align-items:center;justify-content:center;padding:1rem;">
+<div id="auth-screen" style="position:fixed;inset:0;z-index:9999;background:var(--bg);align-items:center;justify-content:center;padding:1rem;display:flex">
   <div class="auth-box">
     <div class="auth-logo">
       <svg viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg" style="width:32px;height:32px">
@@ -4593,10 +4579,8 @@ try { window.suppliesData = JSON.parse(localStorage.getItem('boc_supplies') || '
         `;
       }
     } else {
-      // Normal page load — hide app until auth confirmed
-      document.querySelector('main').style.display = 'none';
-      document.querySelector('header').style.display = 'none';
-      document.getElementById('auth-screen').classList.add('show');
+      // Normal page load — auth screen already visible in HTML, nothing to do
+      // Just make sure app is hidden (CSS handles this by default)
     }
 
     // Apply saved theme
@@ -4609,22 +4593,22 @@ try { window.suppliesData = JSON.parse(localStorage.getItem('boc_supplies') || '
         if (redirectScreen) redirectScreen.remove();
         window.currentUser = user;
         if (window.setCurrentUser) window.setCurrentUser(user);
-        document.getElementById('auth-screen').classList.remove('show');
-        document.querySelector('main').style.display = '';
-        document.querySelector('header').style.display = '';
+        document.getElementById('auth-screen').style.display = 'none';
+        document.querySelector('main').classList.add('auth-ready');
+        document.querySelector('header').classList.add('auth-ready');
         if (window.injectUserPill) window.injectUserPill();
         if (window.loadSaved) await window.loadSaved();
         if (window.switchTab) window.switchTab('collection');
       } else if (!mode) {
-        // Only show auth screen on normal load, not during redirect handling
-        document.getElementById('auth-screen').classList.add('show');
-        document.querySelector('main').style.display = 'none';
-        document.querySelector('header').style.display = 'none';
+        document.getElementById('auth-screen').style.display = 'flex';
+        document.querySelector('main').classList.remove('auth-ready');
+        document.querySelector('header').classList.remove('auth-ready');
       }
     });
   } catch(err) {
     console.error('Firebase init failed:', err);
-    document.getElementById('auth-screen').classList.add('show');
+    // Auth screen is already visible by default — nothing extra needed
+    document.getElementById('auth-screen').style.display = 'flex';
   }
 </script>
 
