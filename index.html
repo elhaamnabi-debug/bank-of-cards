@@ -377,9 +377,11 @@ body{background:var(--bg);color:var(--text);font-family:"DM Sans",sans-serif;min
 .spark-bar.mid{background:var(--text3);opacity:.5}
 
 /* ── FULL CARD WINDOW (Rare Candy style) ── */
-.card-window{display:none;position:fixed;inset:0;background:rgba(0,0,0,.75);z-index:500;align-items:center;justify-content:center;padding:1rem;backdrop-filter:blur(4px)}
+.card-window{display:none;position:fixed;inset:0;background:var(--bg);z-index:500;flex-direction:column;overflow-y:auto}
+.card-window.open{display:flex;animation:cw-slide-in .25s cubic-bezier(.4,0,.2,1)}
+@keyframes cw-slide-in{from{transform:translateX(100%);opacity:.5}to{transform:none;opacity:1}}
 .card-window.open{display:flex}
-.cw-inner{background:var(--surface);border-radius:20px;width:min(1000px,98vw);max-height:96vh;overflow:hidden;display:flex;box-shadow:0 20px 80px rgba(0,0,0,.5)}
+.cw-inner{background:var(--surface);width:100%;min-height:100vh;display:flex;flex-direction:column}
 .cw-left{width:min(420px,45%);background:var(--surface2);display:flex;flex-direction:column;align-items:center;justify-content:center;padding:2rem;position:relative;flex-shrink:0}
 .cw-card-img{width:100%;max-width:320px;border-radius:14px;box-shadow:0 12px 40px rgba(0,0,0,.35);object-fit:contain}
 .cw-card-placeholder{width:240px;height:336px;border-radius:14px;background:var(--border);display:flex;align-items:center;justify-content:center;font-size:72px}
@@ -408,12 +410,14 @@ body{background:var(--bg);color:var(--text);font-family:"DM Sans",sans-serif;min
 .cw-mitem-label{font-size:9px;color:var(--text3);text-transform:uppercase;letter-spacing:.4px;margin-bottom:3px}
 .cw-mitem-val{font-size:14px;font-weight:500;font-family:'Space Grotesk',sans-serif}
 .cw-mitem-val.na{font-size:11px;font-weight:400;color:var(--text3)}
-.cw-chart{height:80px;display:flex;align-items:flex-end;gap:3px;padding:4px 0}
-.cw-bar{flex:1;border-radius:3px 3px 0 0;transition:height .4s;position:relative;cursor:pointer}
-.cw-bar:hover::after{content:attr(data-v);position:absolute;bottom:100%;left:50%;transform:translateX(-50%);background:var(--text);color:var(--surface);font-size:9px;padding:2px 5px;border-radius:4px;white-space:nowrap;margin-bottom:3px}
-.cw-bar.hi{background:var(--green)}
-.cw-bar.lo{background:var(--red);opacity:.7}
-.cw-bar.mid{background:var(--text3);opacity:.5}
+.cw-chart{height:90px;margin:4px 0 8px;position:relative}
+.cw-chart svg{width:100%;height:100%;overflow:visible}
+.cw-chart-area{fill:url(#cw-grad)}
+.cw-chart-line{fill:none;stroke:var(--green);stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.cw-chart-dot{fill:var(--green);stroke:var(--surface);stroke-width:2}
+.cw-chart-dot-lo{fill:var(--red)}
+.cw-chart-dot-hi{fill:var(--green)}
+.cw-chart-label{font-size:9px;fill:var(--text3);font-family:'Space Grotesk',sans-serif}
 .cw-trend-row{display:flex;gap:8px;flex-wrap:wrap;margin-top:6px}
 .cw-trend-item{font-size:11px;font-weight:500;display:flex;align-items:center;gap:3px}
 .cw-actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:4px}
@@ -429,11 +433,11 @@ body{background:var(--bg);color:var(--text);font-family:"DM Sans",sans-serif;min
 .cw-slab-grade{font-size:18px;font-weight:500;font-family:'Space Grotesk',sans-serif;color:var(--gold)}
 .cw-slab-price{font-size:12px;color:var(--green);margin-top:2px}
 @media(max-width:680px){
-  .cw-inner{flex-direction:column;max-height:98vh}
-  .cw-left{width:100%;padding:1.5rem;min-height:260px}
-  .cw-card-img{max-width:200px}
-  .cw-right{padding:1.25rem}
-  .cw-title{font-size:20px}
+  .cw-inner{flex-direction:column}
+  .cw-inner > div:nth-child(2){flex-direction:column}
+  .cw-inner > div:nth-child(2) > .cw-left{width:100%;padding:16px;flex-direction:row;gap:16px;align-items:flex-start}
+  .cw-card-img, .cw-card-placeholder{width:120px!important;height:168px!important}
+  .cw-inner > div:nth-child(2) > .cw-right{padding:0 16px 32px}
 }
 
 /* ── SCANNER TAB ── */
@@ -921,6 +925,68 @@ header.auth-ready{ display:grid!important }
   font-family:'Space Grotesk',sans-serif!important;
 }
 
+/* ── ADD CARD SEARCH OVERLAY ── */
+#add-search-overlay{
+  display:none;position:fixed;inset:0;z-index:9000;
+  background:rgba(0,0,0,.5);backdrop-filter:blur(6px);
+}
+#add-search-overlay.open{display:block}
+.as-box{
+  position:absolute;top:0;left:0;right:0;
+  background:var(--surface);
+  border-radius:0 0 20px 20px;
+  box-shadow:0 8px 40px rgba(0,0,0,.2);
+  max-height:92vh;display:flex;flex-direction:column;
+  animation:as-slide-down .22s cubic-bezier(.4,0,.2,1);
+}
+@keyframes as-slide-down{from{transform:translateY(-100%);opacity:0}to{transform:none;opacity:1}}
+.as-search-row{
+  display:flex;align-items:center;gap:10px;
+  padding:14px 16px;border-bottom:1px solid var(--border);
+}
+.as-icon{font-size:20px;flex-shrink:0;color:var(--text3)}
+.as-input{
+  flex:1;border:none;outline:none;font-family:inherit;
+  font-size:17px;background:transparent;color:var(--text);
+}
+.as-input::placeholder{color:var(--text3)}
+.as-close{width:30px;height:30px;border-radius:50%;border:none;background:var(--surface2);
+  cursor:pointer;font-size:16px;color:var(--text2);display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.as-results{overflow-y:auto;flex:1}
+.as-hint{text-align:center;padding:2.5rem 1rem;color:var(--text3);font-size:14px;line-height:1.7}
+.as-loading{display:flex;align-items:center;justify-content:center;gap:10px;padding:2rem;color:var(--text2);font-size:14px}
+.as-spinner{width:20px;height:20px;border:2.5px solid var(--border);border-top-color:var(--blue);border-radius:50%;animation:spin .7s linear infinite;flex-shrink:0}
+.as-empty{text-align:center;padding:2.5rem;color:var(--text3);font-size:14px}
+.as-result{
+  display:flex;align-items:center;gap:12px;
+  padding:10px 16px;cursor:pointer;transition:background .1s;
+  border-bottom:1px solid var(--border);
+}
+.as-result:last-child{border-bottom:none}
+.as-result:hover{background:var(--surface2)}
+.as-result:active{background:var(--border)}
+.as-thumb{width:36px;height:50px;object-fit:cover;border-radius:6px;background:var(--surface2);flex-shrink:0}
+.as-info{flex:1;min-width:0}
+.as-set-label{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:var(--blue);margin-bottom:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.as-card-name{font-size:15px;font-weight:600;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.as-card-sub{font-size:11px;color:var(--text3);margin-top:1px}
+.as-price{font-family:'Space Grotesk',sans-serif;font-size:16px;font-weight:500;color:var(--green);flex-shrink:0}
+.as-rarity{display:inline-block;font-size:9px;font-weight:700;padding:1px 6px;border-radius:4px;margin-left:5px;vertical-align:middle;background:var(--gold-bg);color:var(--gold)}
+
+/* quick-add confirm sheet */
+.as-confirm{padding:16px}
+.as-confirm-top{display:flex;gap:14px;align-items:flex-start;margin-bottom:16px}
+.as-confirm-img{width:72px;height:100px;object-fit:cover;border-radius:10px;background:var(--surface2);flex-shrink:0;box-shadow:0 4px 12px rgba(0,0,0,.15)}
+.as-confirm-meta{flex:1;min-width:0}
+.as-confirm-name{font-family:'Syne',sans-serif;font-size:18px;font-weight:800;line-height:1.2;margin-bottom:4px}
+.as-confirm-set{font-size:12px;color:var(--text2);margin-bottom:8px}
+.as-confirm-price{font-family:'Space Grotesk',sans-serif;font-size:24px;font-weight:500;color:var(--green)}
+.as-confirm-form{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:14px}
+.as-confirm-form .full{grid-column:1/-1}
+.as-confirm-add{width:100%;padding:14px;border-radius:14px;border:none;background:var(--text);color:#fff;font-family:'Syne',sans-serif;font-size:16px;font-weight:800;cursor:pointer;transition:opacity .15s;margin-bottom:8px}
+.as-confirm-add:hover{opacity:.87}
+.as-confirm-back{width:100%;padding:11px;border-radius:14px;border:1px solid var(--border);background:transparent;font-family:inherit;font-size:14px;cursor:pointer;color:var(--text2)}
+
 /* ── EMPTY ── */
 .empty{text-align:center;padding:3rem;color:var(--text2);font-size:14px}
 
@@ -1202,54 +1268,54 @@ header.auth-ready{ display:grid!important }
 </div>
 </div>
 
-<!-- ══ FULL CARD WINDOW ══ -->
-<div class="card-window" id="card-window" onclick="if(event.target===this)closeCardWindow()">
+<!-- FULL CARD WINDOW -->
+<div class="card-window" id="card-window">
 <div class="cw-inner">
-  <button class="cw-close" onclick="closeCardWindow()">✕</button>
-  <!-- Left: card image -->
-  <div class="cw-left" id="cw-left">
-    <div class="cw-card-placeholder" id="cw-placeholder">✨</div>
-    <img class="cw-card-img" id="cw-img" style="display:none" alt="card">
+  <!-- Top nav bar -->
+  <div style="display:flex;align-items:center;gap:12px;padding:14px 16px;border-bottom:1px solid var(--border);position:sticky;top:0;background:var(--surface);z-index:10">
+    <button class="cw-close" onclick="closeCardWindow()" style="width:36px;height:36px;border-radius:50%;border:1px solid var(--border);background:var(--surface2);font-size:18px;cursor:pointer;display:flex;align-items:center;justify-content:center;color:var(--text2);flex-shrink:0">←</button>
+    <div id="cw-breadcrumb" style="font-size:13px;color:var(--text3);flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis"></div>
+    <div id="cw-add-btn-wrap"></div>
   </div>
-  <!-- Right: info -->
-  <div class="cw-right" id="cw-right">
-    <div class="cw-breadcrumb" id="cw-breadcrumb"></div>
-    <div class="cw-title" id="cw-title"></div>
-
-    <!-- Add to collection (shown in Sets view) -->
-    <button class="cw-add-btn" id="cw-add-btn" onclick="cwAddToCollection()" style="display:none">
-      🗂 ADD TO COLLECTION
-    </button>
-
-    <!-- In your collection -->
-    <div class="cw-section" id="cw-collection-section" style="display:none">
-      <div class="cw-section-hd">
-        <span class="cw-section-title" id="cw-coll-title">In Your Collection</span>
-        <span class="chip chip-green" id="cw-coll-count"></span>
+  <!-- Body: card image + info side by side on desktop, stacked on mobile -->
+  <div style="display:flex;gap:0;flex:1;max-width:900px;margin:0 auto;width:100%;padding:0">
+    <!-- Left: card image -->
+    <div class="cw-left" id="cw-left" style="width:260px;flex-shrink:0;padding:24px 16px 24px 24px;display:flex;flex-direction:column;align-items:center;gap:12px">
+      <div class="cw-card-placeholder" id="cw-placeholder" style="width:200px;height:280px;border-radius:14px;background:var(--surface2);display:flex;align-items:center;justify-content:center;font-size:48px">✨</div>
+      <img class="cw-card-img" id="cw-img" style="display:none;width:200px;border-radius:14px;box-shadow:0 8px 32px rgba(0,0,0,.18)" alt="card">
+      <!-- Add to collection button shown in Sets view -->
+      <button class="cw-add-btn" id="cw-add-btn" onclick="cwAddToCollection()" style="display:none;width:100%;padding:12px;border-radius:12px;border:none;background:var(--text);color:#fff;font-family:'Syne',sans-serif;font-size:14px;font-weight:700;cursor:pointer">🗂 Add to Collection</button>
+    </div>
+    <!-- Right: info -->
+    <div class="cw-right" id="cw-right" style="flex:1;padding:24px 24px 40px 8px;overflow-y:auto;min-width:0">
+      <div class="cw-title" id="cw-title" style="font-family:'Syne',sans-serif;font-size:26px;font-weight:800;line-height:1.2;margin-bottom:16px"></div>
+      <!-- In your collection -->
+      <div class="cw-section" id="cw-collection-section" style="display:none;margin-bottom:12px">
+        <div class="cw-section-hd">
+          <span class="cw-section-title" id="cw-coll-title">In Your Collection</span>
+          <span class="chip chip-green" id="cw-coll-count"></span>
+        </div>
+        <div id="cw-coll-entries"></div>
       </div>
-      <div id="cw-coll-entries"></div>
-    </div>
-
-    <!-- Graded Slabs -->
-    <div class="cw-section" id="cw-slabs-section" style="display:none">
-      <div class="cw-section-hd">
-        <span class="cw-section-title">Graded Slabs</span>
-        <button class="btn-sm" onclick="openAddSlab()">+ Add Slab</button>
+      <!-- Graded Slabs -->
+      <div class="cw-section" id="cw-slabs-section" style="display:none;margin-bottom:12px">
+        <div class="cw-section-hd">
+          <span class="cw-section-title">Graded Slabs</span>
+          <button class="btn-sm" onclick="openAddSlab()">+ Add Slab</button>
+        </div>
+        <div class="cw-slab-grid" id="cw-slab-entries"></div>
       </div>
-      <div class="cw-slab-grid" id="cw-slab-entries"></div>
+      <!-- Market Price -->
+      <div class="cw-section" style="margin-bottom:12px">
+        <div class="cw-section-hd"><span class="cw-section-title">Market Price</span><span class="market-live-dot" style="width:7px;height:7px;border-radius:50%;background:var(--green);animation:pulse 2s infinite;display:inline-block"></span></div>
+        <div class="cw-market-price" id="cw-market-main">—</div>
+        <div class="cw-market-grid" id="cw-market-grid"></div>
+        <div class="cw-chart" id="cw-chart"></div>
+        <div class="cw-trend-row" id="cw-trend-row"></div>
+      </div>
+      <!-- Actions -->
+      <div class="cw-actions" id="cw-actions"></div>
     </div>
-
-    <!-- Market Price -->
-    <div class="cw-section">
-      <div class="cw-section-hd"><span class="cw-section-title">Market Price</span><span class="market-live-dot" style="width:7px;height:7px;border-radius:50%;background:var(--green);animation:pulse 2s infinite;display:inline-block"></span></div>
-      <div class="cw-market-price" id="cw-market-main">—</div>
-      <div class="cw-market-grid" id="cw-market-grid"></div>
-      <div class="cw-chart" id="cw-chart"></div>
-      <div class="cw-trend-row" id="cw-trend-row"></div>
-    </div>
-
-    <!-- Actions -->
-    <div class="cw-actions" id="cw-actions"></div>
   </div>
 </div>
 </div>
@@ -1641,13 +1707,40 @@ function _renderCwMarketPrices(p,card){
 }
 
 function _renderCwChart(spark){
-  if(!spark?.length){document.getElementById('cw-chart').innerHTML='';return;}
-  const max=Math.max(...spark),min=Math.min(...spark),range=max-min||1;
-  document.getElementById('cw-chart').innerHTML=spark.map(v=>{
-    const h=Math.round(14+((v-min)/range)*60);
-    const cls=v===max?'hi':v===min?'lo':'mid';
-    return `<div class="cw-bar ${cls}" style="height:${h}px" data-v="$${v.toFixed(2)}"></div>`;
-  }).join('');
+  const el = document.getElementById('cw-chart');
+  if(!spark?.length || !el){el&&(el.innerHTML='');return;}
+  const W=300, H=80, pad=4;
+  const max=Math.max(...spark), min=Math.min(...spark), range=max-min||1;
+  const pts = spark.map((v,i)=>{
+    const x = pad + (i/(spark.length-1||1))*(W-pad*2);
+    const y = pad + (1-(v-min)/range)*(H-pad*2);
+    return [x,y];
+  });
+  const line = pts.map((p,i)=>i===0?`M${p[0]},${p[1]}`:`L${p[0]},${p[1]}`).join(' ');
+  const area = `${line} L${pts[pts.length-1][0]},${H} L${pts[0][0]},${H} Z`;
+  const hiIdx = spark.indexOf(max), loIdx = spark.indexOf(min);
+  const trend = spark[spark.length-1] >= spark[0];
+  const color = trend ? '#237a42' : '#d43a2e';
+
+  el.innerHTML = `<svg viewBox="0 0 ${W} ${H}" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
+    <defs>
+      <linearGradient id="cw-grad" x1="0" y1="0" x2="0" y2="1">
+        <stop offset="0%" stop-color="${color}" stop-opacity="0.18"/>
+        <stop offset="100%" stop-color="${color}" stop-opacity="0"/>
+      </linearGradient>
+    </defs>
+    <path class="cw-chart-area" d="${area}"/>
+    <path class="cw-chart-line" d="${line}" style="stroke:${color}"/>
+    ${pts.map((p,i)=>{
+      if(i!==hiIdx && i!==loIdx && i!==0 && i!==pts.length-1) return '';
+      const cls = i===hiIdx?'cw-chart-dot-hi':i===loIdx?'cw-chart-dot-lo':'cw-chart-dot';
+      const label = '$'+spark[i].toFixed(0);
+      const lx = Math.max(14, Math.min(p[0], W-24));
+      const ly = i===hiIdx ? p[1]-6 : p[1]+14;
+      return `<circle class="${cls}" cx="${p[0]}" cy="${p[1]}" r="3" style="stroke:var(--surface);stroke-width:2;fill:${i===loIdx?'#d43a2e':color}"/>
+        <text class="cw-chart-label" x="${lx}" y="${ly}" text-anchor="middle">${label}</text>`;
+    }).join('')}
+  </svg>`;
 }
 
 
@@ -2217,22 +2310,152 @@ function openAdd(){
   if(currentTab==='binders'){openBinderEdit(null);return;}
   if(currentTab==='bins'){openBinEdit(null);return;}
   if(currentTab==='products'){openProductEdit(null);return;}
-  editingId=null; editingType='card';
-  document.getElementById('em-title').textContent='Add Card';
+  openAddSearch();
+}
+
+// ── ADD CARD SEARCH ──
+let asDebounce = null;
+let asSelectedCard = null;
+let asResults = [];
+
+function openAddSearch(){
+  document.getElementById('add-search-overlay').classList.add('open');
+  const inp = document.getElementById('as-input');
+  inp.value = '';
+  document.getElementById('as-results').innerHTML = '<div class="as-hint">Search for any Pokémon card by name<br><span style="opacity:.6">e.g. Charizard ex, Pikachu, Umbreon VMAX</span></div>';
+  asSelectedCard = null;
+  setTimeout(()=>inp.focus(), 60);
+}
+
+function closeAddSearch(){
+  document.getElementById('add-search-overlay').classList.remove('open');
+  asSelectedCard = null;
+}
+
+document.addEventListener('keydown', e=>{
+  if(e.key==='Escape') closeAddSearch();
+});
+
+function onAsInput(){
+  clearTimeout(asDebounce);
+  const q = document.getElementById('as-input').value.trim();
+  if(!q){
+    document.getElementById('as-results').innerHTML='<div class="as-hint">Search for any Pokémon card by name<br><span style="opacity:.6">e.g. Charizard ex, Pikachu, Umbreon VMAX</span></div>';
+    return;
+  }
+  document.getElementById('as-results').innerHTML='<div class="as-loading"><div class="as-spinner"></div>Searching…</div>';
+  asDebounce = setTimeout(()=>runAsSearch(q), 320);
+}
+
+function asGetPrice(c){
+  return c.tcgplayer?.prices?.holofoil?.market
+    || c.tcgplayer?.prices?.['1stEditionHolofoil']?.market
+    || c.tcgplayer?.prices?.normal?.market
+    || c.tcgplayer?.prices?.reverseHolofoil?.market
+    || c.cardmarket?.prices?.averageSellPrice
+    || null;
+}
+
+async function runAsSearch(q){
+  try{
+    const r = await fetch(`https://api.pokemontcg.io/v2/cards?q=${encodeURIComponent('name:"'+q+'"')}&orderBy=-tcgplayer.prices.holofoil.market&pageSize=20&select=id,name,number,set,images,tcgplayer,cardmarket,rarity`);
+    const d = await r.json();
+    let results = d.data || [];
+    if(!results.length){
+      const r2 = await fetch(`https://api.pokemontcg.io/v2/cards?q=${encodeURIComponent('name:'+q+'*')}&orderBy=-tcgplayer.prices.holofoil.market&pageSize=20&select=id,name,number,set,images,tcgplayer,cardmarket,rarity`);
+      const d2 = await r2.json();
+      results = d2.data || [];
+    }
+    asResults = results;
+    renderAsResults(results);
+  }catch(e){
+    document.getElementById('as-results').innerHTML='<div class="as-empty">Search failed. Check your connection.</div>';
+  }
+}
+
+function renderAsResults(results){
+  const el = document.getElementById('as-results');
+  if(!results.length){el.innerHTML='<div class="as-empty">No cards found. Try a different name.</div>';return;}
+  el.innerHTML = results.map((c,i)=>{
+    const price = asGetPrice(c);
+    const rarity = c.rarity || '';
+    const rarityHtml = rarity ? `<span class="as-rarity">${rarity}</span>` : '';
+    return `<div class="as-result" onclick="asSelectCard(${i})">
+      <img class="as-thumb" src="${c.images?.small||''}" alt="" onerror="this.style.opacity='.2'">
+      <div class="as-info">
+        <div class="as-set-label">${c.set?.name||''} · ${(c.set?.releaseDate||'').substring(0,4)}</div>
+        <div class="as-card-name">${c.name}${rarityHtml}</div>
+        <div class="as-card-sub">#${c.number}</div>
+      </div>
+      ${price?`<div class="as-price">$${price.toFixed(2)}</div>`:''}
+    </div>`;
+  }).join('');
+}
+
+function asSelectCard(i){
+  const c = asResults[i];
+  if(!c) return;
+  asSelectedCard = c;
+  const price = asGetPrice(c);
   const binderOpts = binders.map(b=>`<option value="${b.id}">${b.icon} ${b.name}</option>`).join('');
-  document.getElementById('edit-form').innerHTML=`
-    <div class="form-field full"><label>Card Name</label><input type="text" id="ef-name" placeholder="e.g. Charizard ex"></div>
-    <div class="form-field"><label>Set</label><input type="text" id="ef-set" placeholder="e.g. Obsidian Flames"></div>
-    <div class="form-field"><label>Year</label><input type="number" id="ef-year" value="${new Date().getFullYear()}"></div>
-    <div class="form-field"><label>Card Number</label><input type="text" id="ef-num" placeholder="001/198"></div>
-    <div class="form-field"><label>Condition</label><select id="ef-cond"><option>NM</option><option>LP</option><option>MP</option><option>HP</option><option>DMG</option></select></div>
-    <div class="form-field"><label>Quantity</label><input type="number" id="ef-qty" value="1" min="1"></div>
-    <div class="form-field"><label>Price Paid ($)</label><input type="number" id="ef-bought" step="0.01" min="0" placeholder="0.00"></div>
-    <div class="form-field"><label>Market Value ($)</label><input type="number" id="ef-value" step="0.01" min="0" placeholder="0.00"></div>
-    <div class="form-field full"><label>Binder</label><select id="ef-binder">${binderOpts}</select></div>
-  `;
-  document.querySelector('#edit-overlay .btn.primary').onclick=saveItem;
-  document.getElementById('edit-overlay').classList.add('open');
+  document.getElementById('as-results').innerHTML = `
+    <div class="as-confirm">
+      <div class="as-confirm-top">
+        <img class="as-confirm-img" src="${c.images?.small||''}" alt="" onerror="this.style.opacity='.2'">
+        <div class="as-confirm-meta">
+          <div class="as-confirm-name">${c.name}</div>
+          <div class="as-confirm-set">${c.set?.name||''} · #${c.number} · ${(c.set?.releaseDate||'').substring(0,4)}</div>
+          ${price?`<div class="as-confirm-price">$${price.toFixed(2)}</div>`:'<div style="color:var(--text3);font-size:13px;margin-top:4px">No price data</div>'}
+          ${c.rarity?`<div style="margin-top:6px;font-size:12px;color:var(--text2)">${c.rarity}</div>`:''}
+        </div>
+      </div>
+      <div class="as-confirm-form">
+        <div class="form-field"><label>Condition</label>
+          <select id="as-cond"><option>NM</option><option>LP</option><option>MP</option><option>HP</option><option>DMG</option></select>
+        </div>
+        <div class="form-field"><label>Quantity</label>
+          <input type="number" id="as-qty" value="1" min="1">
+        </div>
+        <div class="form-field"><label>Price Paid ($)</label>
+          <input type="number" id="as-paid" step="0.01" value="0" placeholder="0.00">
+        </div>
+        <div class="form-field"><label>Market Value ($)</label>
+          <input type="number" id="as-value" step="0.01" value="${price?price.toFixed(2):'0'}" placeholder="0.00">
+        </div>
+        ${binderOpts?`<div class="form-field full"><label>Binder</label><select id="as-binder">${binderOpts}</select></div>`:''}
+      </div>
+      <button class="as-confirm-add" onclick="asAddToCollection()">＋ Add to Collection</button>
+      <button class="as-confirm-back" onclick="asGoBack()">← Back to results</button>
+    </div>`;
+}
+
+function asGoBack(){
+  asSelectedCard = null;
+  renderAsResults(asResults);
+}
+
+function asAddToCollection(){
+  const c = asSelectedCard;
+  if(!c) return;
+  const price = asGetPrice(c);
+  const card = {
+    id: nextId++,
+    name: c.name,
+    set: c.set?.name||'',
+    year: parseInt((c.set?.releaseDate||new Date().getFullYear().toString()).substring(0,4))||new Date().getFullYear(),
+    num: c.number||'—',
+    cond: document.getElementById('as-cond')?.value||'NM',
+    qty: parseInt(document.getElementById('as-qty')?.value)||1,
+    bought: parseFloat(document.getElementById('as-paid')?.value)||0,
+    value: parseFloat(document.getElementById('as-value')?.value)||price||0,
+    binder: document.getElementById('as-binder')?.value||binders[0]?.id||null,
+    type:'pokemon', sold:null, soldAt:null, slabs:[], bin:null,
+    img: c.images?.small||null,
+  };
+  cards.push(card);
+  saveAll();
+  closeAddSearch();
+  renderTab(currentTab);
 }
 
 function switchToEdit(){
@@ -4847,6 +5070,20 @@ try { window.suppliesData = JSON.parse(localStorage.getItem('boc_supplies') || '
     <div class="auth-error" id="auth-error"></div>
     <div class="auth-success" id="auth-success"></div>
     <div class="auth-note">Your data is stored securely in the cloud.<br>Sign in on any device to access your collection.</div>
+  </div>
+</div>
+
+<!-- ADD CARD SEARCH OVERLAY -->
+<div id="add-search-overlay" onclick="if(event.target===this)closeAddSearch()">
+  <div class="as-box" id="as-box">
+    <div class="as-search-row">
+      <span class="as-icon">🔍</span>
+      <input class="as-input" id="as-input" placeholder="Search cards…" autocomplete="off" autocapitalize="none" oninput="onAsInput()">
+      <button class="as-close" onclick="closeAddSearch()">✕</button>
+    </div>
+    <div class="as-results" id="as-results">
+      <div class="as-hint">Search for any Pokémon card by name<br><span style="opacity:.6">e.g. Charizard ex, Pikachu, Umbreon VMAX</span></div>
+    </div>
   </div>
 </div>
 
